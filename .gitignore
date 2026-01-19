@@ -12,3 +12,58 @@ target/
 # OS
 .DS_Store
 Thumbs.db
+
+## --- .NET / C# ---
+[Bb]in/
+[Oo]bj/
+*.swp
+*.lock
+.vs/
+.vscode/
+*.user
+*.userosscache
+*.sln.doccache
+
+## --- User Secrets (CRITICAL) ---
+# This ensures your local passwords never leak
+secrets.json
+.microsoft.visualstudio.azure.usersecrets.xml
+
+## --- Database / EF Core ---
+*.db
+*.db-shm
+*.db-wal
+# Ignore migrations if you prefer a fresh start per environment (optional)
+# Migrations/
+
+## --- Frontend / Web ---
+# Node.js dependencies (if using Tailwind, Playwright, or custom JS)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# Blazor CSS Isolation & Static Assets
+# These are usually generated files found in the wwwroot/obj folder
+wwwroot/css/site.css.map
+**/wwwroot/lib/
+
+# If you use a CSS preprocessor (like Sass or Tailwind)
+.sass-cache/
+*.css.map
+.parcel-cache/
+
+## --- Environment & OS ---
+.env
+.env.local
+.env.*.local
+.DS_Store
+Thumbs.db
+
+## --- IDE / Tools ---
+.idea/
+*.suo
+*.user
+*.userosscache
+*.sln.doccache

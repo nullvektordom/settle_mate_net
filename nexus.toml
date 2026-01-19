@@ -18,5 +18,10 @@ planning_path = "/home/nullvektor/obsidian/projects/settle_mate_net"
 [state]
 is_unlocked = false
 
+[state.active_sprint]
+current = "sprint-1"
+status = "in_progress"
+
 [templates]
 claude_template = "templates/CLAUDE.md.example"
+
