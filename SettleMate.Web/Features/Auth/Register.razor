@@ -1,0 +1,67 @@
+@page "/Register"
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using SettleMate.Web.Data.Entities
+<h3>Register</h3>
+
+<EditForm Model="_input" FormName="registerForm" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div>
+        <labe>Username(optional):</labe>
+        <InputText @bind-Value="_input.Username" />
+    </div>
+    
+    <div>
+        <labe>Email:</labe>
+        <InputText @bind-Value="_input.Email" />
+    </div>
+    
+    <div>
+        <label>Password:</label>
+        <InputText type="password" @bind-Value="_input.Password" />
+    </div>
+    
+    <button type="submit">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
+{
+    <p style="color:red">@_errorMessage</p>
+}
+
+@code {
+    
+    [SupplyParameterFromForm]
+    private InputModel _input { get; set; } = new();
+    
+    private string? _errorMessage;
+
+    private async Task HandleRegister()
+    {
+        var user = new User { UserName = _input.Username ?? _input.Email, Email = _input.Email };
+        var result = await UserManager.CreateAsync(user, _input.Password);
+
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            _errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    private class InputModel
+    {
+        public string? Username { get; set; }
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}
