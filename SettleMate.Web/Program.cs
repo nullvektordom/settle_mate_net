@@ -27,6 +27,12 @@ builder.Services.AddIdentity<User, IdentityRole<Guid>>(o =>
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+builder.Services.ConfigureApplicationCookie(o =>
+{
+    o.LoginPath = "/login";
+    o.AccessDeniedPath = "/login";
+});
+
 builder.Services.AddAuthentication();
 builder.Services.AddAuthorization();
 

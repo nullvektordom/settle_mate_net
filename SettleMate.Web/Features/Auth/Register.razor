@@ -8,41 +8,44 @@
 @using SettleMate.Web.Data.Entities
 <h3>Register</h3>
 
-<EditForm Model="Input" OnValidSubmit="HandleRegister">
+<EditForm Model="_input" FormName="registerForm" OnValidSubmit="HandleRegister">
     <DataAnnotationsValidator />
     <ValidationSummary />
     
     <div>
         <labe>Username(optional):</labe>
-        <InputText @bind-Value="Input.Username" />
+        <InputText @bind-Value="_input.Username" />
     </div>
     
     <div>
         <labe>Email:</labe>
-        <InputText @bind-Value="Input.Email" />
+        <InputText @bind-Value="_input.Email" />
     </div>
     
     <div>
         <label>Password:</label>
-        <InputText type="password" @bind-Value="Input.Password" />
+        <InputText type="password" @bind-Value="_input.Password" />
     </div>
     
     <button type="submit">Register</button>
 </EditForm>
 
-@if (!string.IsNullOrWhiteSpace(errorMessage))
+@if (!string.IsNullOrWhiteSpace(_errorMessage))
 {
-    <p style="color:red">@errorMessage</p>
+    <p style="color:red">@_errorMessage</p>
 }
 
 @code {
-    private InputModel Input = new();
-    private string? errorMessage;
+    
+    [SupplyParameterFromForm]
+    private InputModel _input { get; set; } = new();
+    
+    private string? _errorMessage;
 
     private async Task HandleRegister()
     {
-        var user = new User { UserName = Input.Username ?? Input.Email, Email = Input.Email };
-        var result = await UserManager.CreateAsync(user, Input.Password);
+        var user = new User { UserName = _input.Username ?? _input.Email, Email = _input.Email };
+        var result = await UserManager.CreateAsync(user, _input.Password);
 
         if (result.Succeeded)
         {
@@ -51,7 +54,7 @@
         }
         else
         {
-            errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+            _errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
         }
     }
 
