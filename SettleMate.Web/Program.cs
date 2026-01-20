@@ -1,6 +1,8 @@
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SettleMate.Web.Components;
 using SettleMate.Web.Data;
+using SettleMate.Web.Data.Entities;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,6 +15,21 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+// Add identity services with custom configuration
+builder.Services.AddIdentity<User, IdentityRole<Guid>>(o =>
+    {
+        // Password requirements
+        o.Password.RequireDigit = true;
+        o.Password.RequiredLength = 8;
+        o.Password.RequireNonAlphanumeric = false;
+        o.Password.RequireUppercase = false;
+    })
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+builder.Services.AddAuthentication();
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -24,6 +41,9 @@ if (!app.Environment.IsDevelopment())
 }
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAntiforgery();
 

@@ -1,0 +1,64 @@
+@page "/Register"
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
+@inject SignInManager<User> SignInManager
+@inject NavigationManager NavigationManager
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.EntityFrameworkCore.Metadata.Internal
+@using SettleMate.Web.Data.Entities
+<h3>Register</h3>
+
+<EditForm Model="Input" OnValidSubmit="HandleRegister">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+    
+    <div>
+        <labe>Username(optional):</labe>
+        <InputText @bind-Value="Input.Username" />
+    </div>
+    
+    <div>
+        <labe>Email:</labe>
+        <InputText @bind-Value="Input.Email" />
+    </div>
+    
+    <div>
+        <label>Password:</label>
+        <InputText type="password" @bind-Value="Input.Password" />
+    </div>
+    
+    <button type="submit">Register</button>
+</EditForm>
+
+@if (!string.IsNullOrWhiteSpace(errorMessage))
+{
+    <p style="color:red">@errorMessage</p>
+}
+
+@code {
+    private InputModel Input = new();
+    private string? errorMessage;
+
+    private async Task HandleRegister()
+    {
+        var user = new User { UserName = Input.Username ?? Input.Email, Email = Input.Email };
+        var result = await UserManager.CreateAsync(user, Input.Password);
+
+        if (result.Succeeded)
+        {
+            await SignInManager.SignInAsync(user, isPersistent: false);
+            NavigationManager.NavigateTo("/");
+        }
+        else
+        {
+            errorMessage = string.Join(", ", result.Errors.Select(e => e.Description));
+        }
+    }
+
+    private class InputModel
+    {
+        public string? Username { get; set; }
+        public string Email { get; set; } = "";
+        public string Password { get; set; } = "";
+    }
+}
